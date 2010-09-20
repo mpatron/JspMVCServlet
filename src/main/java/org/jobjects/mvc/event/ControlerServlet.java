@@ -98,7 +98,7 @@ public class ControlerServlet extends HttpServlet {
    */
   public final void doRun(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     
-    //log.info(afficheHttpServletRequest(request));
+    log.info(afficheHttpServletRequest(request));
     
     String actionName = (String) request.getParameter(Constants.ACTION.name());
     AbstractEvent event = null;
