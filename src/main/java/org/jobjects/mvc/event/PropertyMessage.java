@@ -13,14 +13,12 @@ import java.util.ResourceBundle;
  */
 public final class PropertyMessage {
   private static PropertyMessage instance = null;
-  private final transient ResourceBundle prb = ResourceBundle.getBundle(getClass().getPackage()
-      .getName()
-      + ".FieldValidationMessages");
+  private final transient ResourceBundle prb = ResourceBundle.getBundle(getClass().getPackage().getName() + ".FieldValidationMessages");
 
   private PropertyMessage() {
-//    propertyResourceBundle = ResourceBundle.getBundle(getClass().getPackage()
-//        .getName()
-//        + ".FieldValidationMessages");
+    // propertyResourceBundle = ResourceBundle.getBundle(getClass().getPackage()
+    // .getName()
+    // + ".FieldValidationMessages");
   }
 
   public static PropertyMessage getInstance() {

@@ -10,28 +10,28 @@ package org.jobjects.mvc.event;
  * 
  */
 public class ErrorMessage {
-	private String field = null;
-	private String message = null;
+  private String field = null;
+  private String message = null;
 
-	public ErrorMessage(String field, String message) {		
-	  this.field=field;
-	  this.message=message;
-	}
-	
-	public final String getField() {
-		return field;
-	}
+  public ErrorMessage(String field, String message) {
+    this.field = field;
+    this.message = message;
+  }
 
-	public final void setField(String field) {
-		this.field = field;
-	}
+  public final String getField() {
+    return field;
+  }
 
-	public final String getMessage() {
-		return message;
-	}
+  public final void setField(String field) {
+    this.field = field;
+  }
 
-	public final void setMessage(String message) {
-		this.message = message;
-	}
+  public final String getMessage() {
+    return message;
+  }
+
+  public final void setMessage(String message) {
+    this.message = message;
+  }
 
 }

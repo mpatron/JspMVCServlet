@@ -1,10 +1,13 @@
 package org.jobjects.mvc.event;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.EnumSet;
 
 import org.apache.commons.lang.StringUtils;
@@ -40,23 +43,33 @@ public final class FieldValidation {
   private static final String FLOAT_RANGE = "FieldValidation.FLOAT_RANGE";
   private static final String FORMAT_FLOAT = "FieldValidation.FORMAT_FLOAT";
 
+  /*
+   * Il a été décidé en septembre 2009 de rester en commons-lang 2.1.
+   * Cette méthode une recopie du code source de commons-lang 2.4.
+   */
+  private static int length(String str) {
+    return str == null ? 0 : str.length();
+  }
+  
   protected FieldValidation() {
   }
 
   public static ErrorMessages valideString(final String fieldName, final String value, final boolean mandatory, final int minLength,
       final int maxLength) {
     final ErrorMessages errorMessages = new ErrorMessages();
-    if (StringUtils.isBlank(value) && mandatory) {
+    if (StringUtils.isEmpty(value) && mandatory) {
       final ErrorMessage errorMessage = new ErrorMessage(fieldName, PropertyMessage.getInstance().getMessage(MANDATORY));
       errorMessages.getErrorMessages().add(errorMessage);
     } else {
-      if (!StringUtils.isBlank(value)) {
-        if (StringUtils.trim(value).length() < minLength) {
+      if (!StringUtils.isEmpty(value)) {
+        if (length(value) < minLength) {
+        //if (StringUtils.trim(value).length() < minLength) { commons-lang-2.5
           final ErrorMessage errorMessage = new ErrorMessage(fieldName, PropertyMessage.getInstance().getMessage(MINIMUM,
               new Object[] { minLength }));
           errorMessages.getErrorMessages().add(errorMessage);
         }
-        if (StringUtils.trim(value).length() > maxLength) {
+        if (length(value) > maxLength) {
+        //if (StringUtils.trim(value).length() > maxLength) { commons-lang-2.5
           final ErrorMessage errorMessage = new ErrorMessage(fieldName, PropertyMessage.getInstance().getMessage(MAXIMUM,
               new Object[] { maxLength }));
           errorMessages.getErrorMessages().add(errorMessage);
@@ -68,14 +81,14 @@ public final class FieldValidation {
 
   public static ErrorMessages valideDate(String fieldName, String value, boolean mandatory, String format) {
     ErrorMessages errorMessages = new ErrorMessages();
-    if (StringUtils.isBlank(value) && mandatory) {
+    if (StringUtils.isEmpty(value) && mandatory) {
       ErrorMessage errorMessage = new ErrorMessage(fieldName, PropertyMessage.getInstance().getMessage(MANDATORY));
       errorMessages.getErrorMessages().add(errorMessage);
     } else {
-      if (!StringUtils.isBlank(value)) {
+      if (!StringUtils.isEmpty(value)) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         try {
-          sdf.parse(value);
+          parseFullString(sdf, value);
         } catch (ParseException e) {
           ErrorMessage errorMessage = new ErrorMessage(fieldName, PropertyMessage.getInstance().getMessage(FORMAT, new Object[] { format }));
           errorMessages.getErrorMessages().add(errorMessage);
@@ -85,13 +98,29 @@ public final class FieldValidation {
     return errorMessages;
   }
 
+  private static Date parseFullString(final DateFormat df, final String input) throws ParseException {
+    ParsePosition pos = new ParsePosition(0); // On commence le parsing au début
+                                              // de la chaine
+    df.setLenient(false);
+    Date date = df.parse(input, pos); // pas de ParseException
+    if (date == null) {
+      // Erreur lors du parsing ==> Exception
+      throw new ParseException(input, pos.getErrorIndex());
+    }
+    if (pos.getIndex() < input.length()) {
+      // La chaine n'a pas été lu dans sa totalité ==> Exception
+      throw new ParseException(input, pos.getIndex() + 1);
+    }
+    return date;
+  }
+
   public static ErrorMessages valideSelectIn(String fieldName, String value, boolean mandatory, Collection<String> values) {
     ErrorMessages errorMessages = new ErrorMessages();
-    if (StringUtils.isBlank(value) && mandatory) {
+    if (StringUtils.isEmpty(value) && mandatory) {
       ErrorMessage errorMessage = new ErrorMessage(fieldName, PropertyMessage.getInstance().getMessage(MANDATORY));
       errorMessages.getErrorMessages().add(errorMessage);
     } else {
-      if (!StringUtils.isBlank(value)) {
+      if (!StringUtils.isEmpty(value)) {
         if ((values != null) && (values.size() != 0)) {
           if (!values.contains(value)) {
             ErrorMessage errorMessage = new ErrorMessage(fieldName, PropertyMessage.getInstance()
@@ -101,6 +130,21 @@ public final class FieldValidation {
         } else {
           ErrorMessage errorMessage = new ErrorMessage(fieldName, PropertyMessage.getInstance().getMessage(INLIST, new Object[] { value }));
           errorMessages.getErrorMessages().add(errorMessage);
+        }
+      }
+    }
+    return errorMessages;
+  }
+
+  public static ErrorMessages valideSelectIn(String fieldName, String[] values, boolean mandatory, Collection<String> references) {
+    ErrorMessages errorMessages = new ErrorMessages();
+    if (((values == null) || (values.length == 0)) && mandatory) {
+      ErrorMessage errorMessage = new ErrorMessage(fieldName, PropertyMessage.getInstance().getMessage(MANDATORY));
+      errorMessages.getErrorMessages().add(errorMessage);
+    } else {
+      if ((values != null) && (values.length != 0)) {
+        for (int i = 0; i < values.length; i++) {
+          errorMessages.getErrorMessages().addAll(valideSelectIn(fieldName, values[i], mandatory, references).getErrorMessages());
         }
       }
     }
@@ -118,11 +162,11 @@ public final class FieldValidation {
 
   public static ErrorMessages valideBigDecimal(String fieldName, String value, boolean mandatory, BigDecimal min, BigDecimal max) {
     ErrorMessages errorMessages = new ErrorMessages();
-    if (StringUtils.isBlank(value) && mandatory) {
+    if (StringUtils.isEmpty(value) && mandatory) {
       ErrorMessage errorMessage = new ErrorMessage(fieldName, PropertyMessage.getInstance().getMessage(MANDATORY));
       errorMessages.getErrorMessages().add(errorMessage);
     } else {
-      if (!StringUtils.isBlank(value)) {
+      if (!StringUtils.isEmpty(value)) {
         if (NumberUtils.isNumber(value)) {
           NumberRange numberRange = new NumberRange(min, max);
           if (!numberRange.containsNumber(NumberUtils.createBigDecimal(value))) {

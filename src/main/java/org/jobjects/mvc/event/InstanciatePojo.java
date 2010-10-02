@@ -17,13 +17,14 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 public class InstanciatePojo {
 
-  public void createInstance(final HttpServletRequest request, Object myObject) throws IllegalArgumentException {
+  public final void createInstance(final HttpServletRequest request, Object myObject) throws InvalidArgumentException {
     instanceChildPojo(myObject);
     createInstanceRec(request, myObject, null);
   }
 
   @SuppressWarnings("unchecked")
-  protected void createInstanceRec(final HttpServletRequest request, Object myObject, String parentName) throws IllegalArgumentException {
+  protected final void createInstanceRec(final HttpServletRequest request, Object myObject, String parentName)
+      throws InvalidArgumentException {
     String fieldName = StringUtils.EMPTY;
     String propertyType = StringUtils.EMPTY;
     try {
@@ -35,7 +36,8 @@ public class InstanciatePojo {
         if (!listTypes.contains(getSousType(propertyType))) {
           createInstanceRec(request, PropertyUtils.getProperty(myObject, fieldName), fieldName);
         } else {
-          if (StringUtils.endsWith(propertyType, "[]")) {
+          //if (StringUtils.endsWith(propertyType, "[]")) {commons-lang-2.5
+          if (StringUtils.indexOf(propertyType, "[]")>=0) {
             final String values[] = request.getParameterValues(StringUtils.isBlank(parentName) ? fieldName : parentName + "." + fieldName);
             PropertyUtils.setNestedProperty(myObject, fieldName, createInstanceArray(propertyType, values));
           } else {
@@ -45,15 +47,15 @@ public class InstanciatePojo {
         }
       }
 
-    } catch (Throwable e) {
-      throw new IllegalArgumentException("Argument inconnue myObject="
+    } catch (Exception e) {
+      throw new InvalidArgumentException("Argument inconnue myObject="
           + ToStringBuilder.reflectionToString(myObject, ToStringStyle.MULTI_LINE_STYLE) + " parentName=" + parentName + " fieldName="
-          + fieldName + " propertyType=" + propertyType);
+          + fieldName + " propertyType=" + propertyType, e);
     }
   }
 
   @SuppressWarnings("unchecked")
-  protected void instanceChildPojo(Object myObject) throws IllegalArgumentException {
+  protected final void instanceChildPojo(Object myObject) throws InvalidArgumentException {
     String fieldName = StringUtils.EMPTY;
     String propertyType = StringUtils.EMPTY;
     try {
@@ -70,8 +72,8 @@ public class InstanciatePojo {
           }
         }
       }
-    } catch (Throwable e) {
-      throw new IllegalArgumentException("Argument inconnue fieldName=" + fieldName + " propertyType=" + propertyType);
+    } catch (Exception e) {
+      throw new InvalidArgumentException("Argument inconnue fieldName=" + fieldName + " propertyType=" + propertyType, e);
     }
   }
 
@@ -79,9 +81,10 @@ public class InstanciatePojo {
    * java.lang.String -> java.lang.String java.lang.String[] -> java.lang.String
    * xxxxxxxxxxxxxxxx[] -> xxxxxxxxxxxxxxxx null -> null
    */
-  protected String getSousType(String propertyType) {
+  protected final String getSousType(String propertyType) {
     String returnValue;
-    if (StringUtils.endsWith(propertyType, "[]")) {
+    //if (StringUtils.endsWith(propertyType, "[]")) {commons-lang-2.5
+    if (StringUtils.indexOf(propertyType, "[]")>=0) {
       returnValue = StringUtils.left(propertyType, propertyType.length() - 2);
     } else {
       returnValue = propertyType;
@@ -89,7 +92,7 @@ public class InstanciatePojo {
     return returnValue;
   }
 
-  protected Object[] createInstanceArray(final String propertyType, final String[] values) throws IllegalArgumentException {
+  protected final Object[] createInstanceArray(final String propertyType, final String[] values) throws InvalidArgumentException {
     if (values == null) {
       return null;
     }
@@ -101,8 +104,8 @@ public class InstanciatePojo {
         returnValue[i] = createInstanceSimple(sousType, values[i]);
       }
     } catch (java.lang.Throwable t) {
-      throw new IllegalArgumentException("Argument inconnue propertyType=" + propertyType + " values=[" + StringUtils.join(values, ";")
-          + "]");
+      throw new InvalidArgumentException("Argument inconnue propertyType=" + propertyType + " values=[" + StringUtils.join(values, ";")
+          + "]", t);
     }
     return returnValue;
   }
@@ -112,8 +115,7 @@ public class InstanciatePojo {
       "java.math.BigDecimal" };
   private List<String> listTypes = Arrays.asList(types);
 
-
-  protected Object createInstanceSimple(final String propertyType, final String value) throws IllegalArgumentException {
+  protected final Object createInstanceSimple(final String propertyType, final String value) throws InvalidArgumentException {
     Object returnValue;
     try {
       if ("java.lang.String".equals(propertyType)) {
@@ -129,16 +131,16 @@ public class InstanciatePojo {
       } else if (("long".equals(propertyType) || ("java.lang.Long".equals(propertyType)))) {
         returnValue = new Long(value == null ? 0 : Long.parseLong(value));
       } else if (("int".equals(propertyType) || ("java.lang.Integer".equals(propertyType)))) {
-        returnValue = new Integer(value == null ? 0 : Integer.parseInt(value));
+        returnValue = Integer.valueOf(value == null ? 0 : Integer.parseInt(value));
       } else if (("short".equals(propertyType) || ("java.lang.Short".equals(propertyType)))) {
         returnValue = new Short(value == null ? 0 : Short.parseShort(value));
       } else if ("java.math.BigDecimal".equals(propertyType)) {
         returnValue = new BigDecimal(value);
       } else {
-        throw new IllegalArgumentException("Argument inconnue propertyType=" + propertyType + " value=" + value);
+        throw new InvalidArgumentException("Argument inconnue propertyType=" + propertyType + " value=" + value);
       }
     } catch (java.lang.Throwable t) {
-      throw new IllegalArgumentException("Argument inconnue propertyType=" + propertyType + " value=" + value);
+      throw new InvalidArgumentException("Argument inconnue propertyType=" + propertyType + " value=" + value, t);
     }
     return returnValue;
   }

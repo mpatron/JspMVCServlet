@@ -20,16 +20,16 @@ public class ConstantsTest {
 
 	@Test
 	public void testConstantsNomACTION() {
-		assertEquals("ACTION doit être présent.", "ACTION", Constants.ACTION.name());
+		assertEquals("action doit être présent.", "action", Constants.action.name());
 	}
 
 	@Test
 	public void testConstantsNomERRORS() {
-		assertEquals("ACTION doit être présent.", "ERRORS", Constants.ERRORS.name());
+		assertEquals("errors doit être présent.", "errors", Constants.errors.name());
 	}
 
 	@Test
 	public void testConstantsNomJSPBEAN() {
-		assertEquals("ACTION doit être présent.", "JSPBEAN", Constants.JSPBEAN.name());
+		assertEquals("jspBean doit être présent.", "jspBean", Constants.jspBean.name());
 	}
 }
