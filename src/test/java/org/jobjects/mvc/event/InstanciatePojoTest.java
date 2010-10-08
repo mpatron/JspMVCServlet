@@ -84,7 +84,7 @@ public class InstanciatePojoTest {
       fail(ExceptionUtils.getFullStackTrace(e));
     }
   }
-
+  
   @Test
   public void testCreateInstanceArray() {
     try {

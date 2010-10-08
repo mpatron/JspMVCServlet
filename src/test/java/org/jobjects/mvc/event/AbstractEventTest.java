@@ -1,13 +1,7 @@
 package org.jobjects.mvc.event;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 
@@ -73,7 +67,7 @@ public class AbstractEventTest {
       MyJspBean myJspBean=abstractEvent.loadJspBean(requestMock, MyJspBean.class);
       assertEquals("maChaine", myJspBean.getMyValue());
       assertArrayEquals(new String[]{"maChaine-a", "maChaine-b", "maChaine-c"}, myJspBean.getMyTableau());
-      assertNull(myJspBean.getMyTableau2());
+      assertNotNull(myJspBean.getMyTableau2());
       assertEquals("la valeur de mon champs", myJspBean.getMONchamps());
     } catch (Exception e) {
       e.printStackTrace();
@@ -96,7 +90,11 @@ public class AbstractEventTest {
       MyDerJspBean myJspBean=abstractEvent.loadJspBean(requestMock, MyDerJspBean.class);
       assertEquals("maChaine", myJspBean.getMyValue());
       assertArrayEquals(new String[]{"maChaine-a", "maChaine-b", "maChaine-c"}, myJspBean.getMyTableau());
-      assertNull(myJspBean.getMyTableau2());
+      assertNotNull("Le tableau doit être non nul.", myJspBean.getMyTableau2());
+      if(myJspBean.getMyTableau2()!=null) {
+        assertTrue("Le tableau doit être de taille vide.", myJspBean.getMyTableau2().length==0);
+      } 
+      
       assertEquals("la valeur de mon champs derivé...", myJspBean.getDerivate());
       assertEquals("la valeur de mon champs", myJspBean.getMONchamps());
     } catch (Exception e) {
@@ -124,7 +122,10 @@ public class AbstractEventTest {
       MyCompositionJspBean myJspBean=abstractEvent.loadJspBean(requestMock, MyCompositionJspBean.class);
       assertEquals("maChaine", myJspBean.getMyValue());
       assertArrayEquals(new String[]{"maChaine-a", "maChaine-b", "maChaine-c"}, myJspBean.getMyTableau());
-      assertNull(myJspBean.getMyTableau2());
+      assertNotNull("Le tableau doit être non nul.", myJspBean.getMyTableau2());
+      if(myJspBean.getMyTableau2()!=null) {
+        assertTrue("Le tableau doit être de taille vide.", myJspBean.getMyTableau2().length==0);
+      } 
       assertEquals("la valeur de mon champs", myJspBean.getMONchamps());
       assertEquals("la composition de mon champ^^", myJspBean.getComposite().getMonchamp());
       assertArrayEquals(new String[]{"uneChaine-a", "uneChaine-b", "uneChaine-c"}, myJspBean.getComposite().getMyTableauEnPlus());

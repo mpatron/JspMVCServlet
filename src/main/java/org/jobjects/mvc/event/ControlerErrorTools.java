@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 public class ControlerErrorTools {
 
@@ -68,7 +70,13 @@ public class ControlerErrorTools {
     enumsNames = request.getAttributeNames();
     while (enumsNames.hasMoreElements()) {
       String enumName = (String) enumsNames.nextElement();
-      map.put(enumName, (String) request.getAttribute(enumName));
+      Object attribut= request.getAttribute(enumName);
+      if(attribut instanceof String) {
+        map.put(enumName, (String)attribut);
+      } else {
+        map.put(enumName, ToStringBuilder.reflectionToString(attribut, ToStringStyle.SHORT_PREFIX_STYLE));
+      }
+      
     }
     makeTable("ATTRIBUTES", map, sos);
 

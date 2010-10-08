@@ -4,7 +4,7 @@
   <groupId>org.jobject</groupId>
   <artifactId>JspMVCServlet</artifactId>
   <packaging>war</packaging>
-  <version>1.0.3-SNAPSHOT</version>
+  <version>1.0.4-SNAPSHOT</version>
   <name>JspMVCServlet Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <dependencies>
