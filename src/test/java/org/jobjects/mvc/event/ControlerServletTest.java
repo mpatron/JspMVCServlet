@@ -1,8 +1,8 @@
 package org.jobjects.mvc.event;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.logging.Level;
@@ -15,6 +15,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mortbay.jetty.servlet.FilterHolder;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.testing.HttpTester;
 import org.mortbay.jetty.testing.ServletTester;
@@ -25,7 +26,8 @@ public class ControlerServletTest {
 
   private static ServletTester servletTester;
   private static String baseUrl;
-  //private static ServletHolder servletHolder;
+
+  // private static ServletHolder servletHolder;
 
   /**
    * This kicks off an instance of the Jetty servlet container so that we can
@@ -36,20 +38,23 @@ public class ControlerServletTest {
   public static void initServletContainer() throws Exception {
     servletTester = new ServletTester();
     servletTester.setContextPath("/myapp");
-    ServletHolder  shProduction = servletTester.addServlet(ControlerServlet.class, "/maservletproduction");
+    ServletHolder shProduction = servletTester.addServlet(ControlerServlet.class, "/maservletproduction");
     shProduction.setInitParameter("ACTION1", "org.jobjects.mvc.event.eventest.MonEvent1");
     shProduction.setInitParameter("ACTION2", "org.jobjects.mvc.event.eventest.MonEvent2");
     shProduction.setInitParameter("onWorkingMode", "false");
 
-    ServletHolder  shOnWorkingMode = servletTester.addServlet(ControlerServlet.class, "/maservletworking");
+    ServletHolder shOnWorkingMode = servletTester.addServlet(ControlerServlet.class, "/maservletworking");
     shOnWorkingMode.setInitParameter("ACTION1", "org.jobjects.mvc.event.eventest.MonEvent1");
     shOnWorkingMode.setInitParameter("ACTION2", "org.jobjects.mvc.event.eventest.MonEvent2");
     shOnWorkingMode.setInitParameter("onWorkingMode", "true");
-    
-    ServletHolder  shQuiPlante = servletTester.addServlet(ControlerServlet.class, "/maservletquiplante");
+
+    ServletHolder shQuiPlante = servletTester.addServlet(ControlerServlet.class, "/maservletquiplante");
     shQuiPlante.setInitParameter("ACTION1", "org.jobjects.mvc.event.eventest.QuiNexistePas");
     shQuiPlante.setInitParameter("onWorkingMode", "false");
-    
+
+    FilterHolder filterHolder = servletTester.addFilter(LogHttlFilter.class, "/*", 1);
+    filterHolder.setInitParameter("active", "true");
+
     baseUrl = servletTester.createSocketConnector(true);
     Log.debug("baseUrl=" + baseUrl);
     servletTester.start();
@@ -147,13 +152,13 @@ public class ControlerServletTest {
       response.parse(servletTester.getResponses(request.generate()));
 
       String responseContent = response.getContent();
-      assertTrue("Il doit avoir Informations diverses dans le message d'erreur.", StringUtils.contains(responseContent,
-          "Informations diverses"));
+      assertTrue("Il doit avoir Informations diverses dans le message d'erreur.",
+          StringUtils.contains(responseContent, "Informations diverses"));
       assertTrue("Il doit avoir HEADERS dans le message d'erreur.", StringUtils.contains(responseContent, "HEADERS"));
       assertTrue("Il doit avoir ATTRIBUTES dans le message d'erreur.", StringUtils.contains(responseContent, "ATTRIBUTES"));
       assertTrue("Il doit avoir PARAMETERS dans le message d'erreur.", StringUtils.contains(responseContent, "PARAMETERS"));
-      assertEquals("Il n'y aura pas d'erreur sur la servlet car le canal est redirigé sur un page d'erreur spécifique.", 200, response
-          .getStatus());
+      assertEquals("Il n'y aura pas d'erreur sur la servlet car le canal est redirigé sur un page d'erreur spécifique.", 200,
+          response.getStatus());
 
     } catch (Exception e) {
       logger.log(Level.SEVERE, "Erreur interne non prévue.", e);
@@ -169,16 +174,17 @@ public class ControlerServletTest {
 
       try {
         sendHttpPost(baseUrl + "/myapp/maservletquiplante", "ACTION1");
-      }catch (ClassNotFoundException e) {
-        assertTrue("Remonte le nom de la classe.", StringUtils.contains(ExceptionUtils.getStackTrace(e), "org.jobjects.mvc.event.eventest.QuiNexistePas"));
+      } catch (ClassNotFoundException e) {
+        assertTrue("Remonte le nom de la classe.",
+            StringUtils.contains(ExceptionUtils.getStackTrace(e), "org.jobjects.mvc.event.eventest.QuiNexistePas"));
       }
-      
+
     } catch (Exception e) {
       logger.log(Level.SEVERE, "Erreur interne non prévue.", e);
       fail();
     }
   }
-  
+
   @Test
   public void testDoPostHttpServletRequestHttpServletResponse() {
     // assertNotNull(new String());

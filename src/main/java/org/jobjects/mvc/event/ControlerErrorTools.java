@@ -52,7 +52,7 @@ public class ControlerErrorTools {
 
     /* Informations diverses */
     sos.println(SystemUtils.LINE_SEPARATOR);
-    makeTable(request, sos);
+    makeHTMLTable(request, sos);
 
     /* HEADERS */
     sos.println(SystemUtils.LINE_SEPARATOR);
@@ -62,7 +62,7 @@ public class ControlerErrorTools {
       String enumName = (String) enumsNames.nextElement();
       map.put(enumName, request.getHeader(enumName));
     }
-    makeTable("HEADERS", map, sos);
+    makeHTMLTable("HEADERS", map, sos);
 
     /* ATTRIBUTES */
     sos.println(SystemUtils.LINE_SEPARATOR);
@@ -70,15 +70,15 @@ public class ControlerErrorTools {
     enumsNames = request.getAttributeNames();
     while (enumsNames.hasMoreElements()) {
       String enumName = (String) enumsNames.nextElement();
-      Object attribut= request.getAttribute(enumName);
-      if(attribut instanceof String) {
-        map.put(enumName, (String)attribut);
+      Object attribut = request.getAttribute(enumName);
+      if (attribut instanceof String) {
+        map.put(enumName, (String) attribut);
       } else {
         map.put(enumName, ToStringBuilder.reflectionToString(attribut, ToStringStyle.SHORT_PREFIX_STYLE));
       }
-      
+
     }
-    makeTable("ATTRIBUTES", map, sos);
+    makeHTMLTable("ATTRIBUTES", map, sos);
 
     /* PARAMETERS */
     sos.println(SystemUtils.LINE_SEPARATOR);
@@ -88,7 +88,7 @@ public class ControlerErrorTools {
       String enumName = (String) enumsNames.nextElement();
       map.put(enumName, (String) request.getParameter(enumName));
     }
-    makeTable("PARAMETERS", map, sos);
+    makeHTMLTable("PARAMETERS", map, sos);
 
     sos.println(SystemUtils.LINE_SEPARATOR);
     sos.println("</body>");
@@ -96,7 +96,7 @@ public class ControlerErrorTools {
     sos.flush();
   }
 
-  private void makeTable(HttpServletRequest request, ServletOutputStream sos) throws IOException {
+  private void makeHTMLTable(HttpServletRequest request, ServletOutputStream sos) throws IOException {
     sos.println("<table class=\"tableError\">");
     sos.println("<caption>Informations diverses</caption>");
     sos.println("<tr>");
@@ -117,7 +117,7 @@ public class ControlerErrorTools {
     sos.println("</table>");
   }
 
-  private void makeTable(String title, Map<String, String> values, ServletOutputStream sos) throws IOException {
+  private void makeHTMLTable(String title, Map<String, String> values, ServletOutputStream sos) throws IOException {
     sos.println("<table class=\"tableError\">");
     sos.println("<caption>" + title + "</caption>");
     sos.println("<tr>");

@@ -18,5 +18,7 @@ package org.jobjects.mvc.event;
  * 
  */
 public enum Constants {
-  action, errors, jspBean;
+  action,
+  errors,
+  jspBean;
 }

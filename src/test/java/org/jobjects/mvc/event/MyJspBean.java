@@ -48,8 +48,11 @@ public class MyJspBean implements JspBean {
   public void setMONchamps(String mONchamps) {
     this.mONchamps = mONchamps;
   }
-  
-  /*attribut privé sans getter nin setter pour vérifier qu'il ne sera pas pris dans le marshaling.*/
+
+  /*
+   * attribut privé sans getter nin setter pour vérifier qu'il ne sera pas pris
+   * dans le marshaling.
+   */
   @SuppressWarnings("unused")
   private String pDTransacCodeToto;
 }

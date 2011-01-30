@@ -10,6 +10,7 @@ public class ClassDeriveCompose extends ClassParent {
   public void setComposeName(String composeName) {
     this.composeName = composeName;
   }
+
   // ---------------------------------------------------------------------------
 
   private ClassPojo composition;
@@ -21,6 +22,7 @@ public class ClassDeriveCompose extends ClassParent {
   public void setComposition(ClassPojo composition) {
     this.composition = composition;
   }
+
   // ---------------------------------------------------------------------------
 
   private String[] monTableauString;

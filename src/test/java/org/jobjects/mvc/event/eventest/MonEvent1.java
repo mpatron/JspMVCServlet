@@ -7,8 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jobjects.mvc.event.ErrorMessages;
 import org.jobjects.mvc.event.AbstractEvent;
+import org.jobjects.mvc.event.ErrorMessages;
 import org.jobjects.mvc.event.JspBean;
 
 public class MonEvent1 extends AbstractEvent {
@@ -24,8 +24,7 @@ public class MonEvent1 extends AbstractEvent {
   }
 
   @Override
-  public void process(ServletContext sc, HttpServletRequest request,
-      HttpServletResponse response) throws ServletException, IOException {
+  public void process(ServletContext sc, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     sc.getRequestDispatcher(getFromUrl()).forward(request, response);
   }
 

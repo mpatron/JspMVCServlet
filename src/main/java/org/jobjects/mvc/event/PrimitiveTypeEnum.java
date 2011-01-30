@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public enum PrimitiveTypeEnum {
   BOOLEAN("boolean", Boolean.TYPE),
+  BYTE("byte", Byte.TYPE),
   SHORT("short", Short.TYPE),
   INT("int", Integer.TYPE),
   LONG("long", Long.TYPE),
@@ -44,33 +45,33 @@ public enum PrimitiveTypeEnum {
   }
 
   public static boolean isPrimitif(String typeName) {
-    boolean returnValue=Boolean.FALSE; 
+    boolean returnValue = Boolean.FALSE;
     try {
       EnumSet<PrimitiveTypeEnum> ee = EnumSet.allOf(PrimitiveTypeEnum.class);
       for (PrimitiveTypeEnum en : ee) {
-        if(StringUtils.equals(en.getTypeName(), typeName)) {
-          returnValue=Boolean.TRUE;
+        if (StringUtils.equals(en.getTypeName(), typeName)) {
+          returnValue = Boolean.TRUE;
           break;
         }
       }
     } catch (Exception e) {
-      returnValue=Boolean.FALSE;
+      returnValue = Boolean.FALSE;
     }
     return returnValue;
   }
-  
+
   public static PrimitiveTypeEnum valueOfType(String typeName) {
-    PrimitiveTypeEnum returnValue=null;
+    PrimitiveTypeEnum returnValue = null;
     try {
       EnumSet<PrimitiveTypeEnum> ee = EnumSet.allOf(PrimitiveTypeEnum.class);
       for (PrimitiveTypeEnum en : ee) {
-        if(StringUtils.equals(en.getTypeName(), typeName)) {
-          returnValue=en;
+        if (StringUtils.equals(en.getTypeName(), typeName)) {
+          returnValue = en;
           break;
         }
       }
     } catch (Exception e) {
-      //Ne rien faire, renvoit de null.
+      // Ne rien faire, renvoit de null.
     }
     return returnValue;
   }

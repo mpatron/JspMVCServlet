@@ -1,14 +1,15 @@
 package org.jobjects.mvc.event;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;
 
 public class ErrorMessagesTest {
 
-  private ErrorMessages errorMessages= new ErrorMessages();
-  
+  private ErrorMessages errorMessages = new ErrorMessages();
+
   @Before
   public void setUp() throws Exception {
     errorMessages.getErrorMessages().add(new ErrorMessage("field1", "message11"));

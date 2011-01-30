@@ -2,9 +2,9 @@ package org.jobjects.mvc.event;
 
 public class MyComposite {
   public MyComposite() {
-    
+
   }
-  
+
   private String monchamp;
 
   public String getMonchamp() {
@@ -14,8 +14,7 @@ public class MyComposite {
   public void setMonchamp(String monchamp) {
     this.monchamp = monchamp;
   }
-  
-  
+
   private String[] myTableauEnPlus;
 
   public String[] getMyTableauEnPlus() {
@@ -25,5 +24,5 @@ public class MyComposite {
   public void setMyTableauEnPlus(String[] myTableauEnPlus) {
     this.myTableauEnPlus = myTableauEnPlus;
   }
-  
+
 }

@@ -3,7 +3,9 @@
  */
 package org.jobjects.mvc.event;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -304,6 +306,12 @@ public class FieldValidationTest {
       assertEquals("Un de message d'erreur.", 1, errorMessages.getErrorMessages().size());
 
       errorMessages = FieldValidation.valideBigDecimal("fieldName", "-0.62", false, new BigDecimal(0), new BigDecimal(4));
+      assertEquals("Un de message d'erreur.", 1, errorMessages.getErrorMessages().size());
+
+      errorMessages = FieldValidation.valideBigDecimal("fieldName", "62l", true, new BigDecimal(0), new BigDecimal(4));
+      assertEquals("Un de message d'erreur.", 1, errorMessages.getErrorMessages().size());
+
+      errorMessages = FieldValidation.valideBigDecimal("fieldName", "0x55", true, new BigDecimal(0), new BigDecimal(4));
       assertEquals("Un de message d'erreur.", 1, errorMessages.getErrorMessages().size());
 
     } catch (Exception e) {
